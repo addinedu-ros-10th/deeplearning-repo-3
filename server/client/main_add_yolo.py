@@ -1,4 +1,4 @@
-# sudo apt install -y portaudio19-dev libportaudio2 libportaudiocpp0 libgl1 libglib2.0-0 mpg123
+# sudo apt install -y portaudio19-dev libportaudio2 libportaudiocpp0 libgl1 libglib2.0-0 mpg123 sounddevice
 
 import cv2
 import requests
@@ -41,7 +41,7 @@ def main():
         # 화면 출력
         cv2.imshow("YOLO Detection (Server)", annotated)
 
-        key = cv2.waitKey(1) & 0xFFlgm-364@cohesive-keel-463404-g9.iam.gserviceaccount.com
+        key = cv2.waitKey(1) & 0xFF
         if key == ord("1"):  # 이미지 캡션
             cv2.imwrite("current.jpg", frame)
             threading.Thread(target=send_caption, args=("current.jpg",), daemon=True).start()
