@@ -410,109 +410,18 @@
        <x>8</x>
        <y>206</y>
        <width>370</width>
-       <height>190</height>
+       <height>181</height>
       </rect>
      </property>
      <property name="title">
       <string>connectionPanel</string>
      </property>
-     <widget class="QLabel" name="labelD435">
-      <property name="geometry">
-       <rect>
-        <x>8</x>
-        <y>24</y>
-        <width>100</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>D435 depth</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="lampD435">
-      <property name="geometry">
-       <rect>
-        <x>120</x>
-        <y>24</y>
-        <width>14</width>
-        <height>14</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background:#4caf50;border-radius:7px;</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="labelWebcam">
-      <property name="geometry">
-       <rect>
-        <x>8</x>
-        <y>60</y>
-        <width>100</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Webcam</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="lampWebcam">
-      <property name="geometry">
-       <rect>
-        <x>120</x>
-        <y>60</y>
-        <width>14</width>
-        <height>14</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background:#ffc107;border-radius:7px;</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="labelServer">
-      <property name="geometry">
-       <rect>
-        <x>8</x>
-        <y>96</y>
-        <width>100</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Server</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="lampServer">
-      <property name="geometry">
-       <rect>
-        <x>120</x>
-        <y>96</y>
-        <width>14</width>
-        <height>14</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background:#dc3545;border-radius:7px;</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="btnReconnect">
-      <property name="geometry">
-       <rect>
-        <x>8</x>
-        <y>132</y>
-        <width>120</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Reconnect</string>
-      </property>
-     </widget>
     </widget>
     <widget class="QGroupBox" name="logTable">
      <property name="geometry">
       <rect>
        <x>8</x>
-       <y>404</y>
+       <y>390</y>
        <width>370</width>
        <height>228</height>
       </rect>

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import os, sys, time, traceback, re, shutil, datetime, subprocess
+import os, sys, time, traceback, re, shutil, datetime, subprocess, socket, threading
 from PyQt6 import uic
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QDialog, QVBoxLayout, QHBoxLayout,
     QLabel, QPushButton, QTableWidget, QTableWidgetItem, QHeaderView,
-    QMessageBox, QLineEdit, QSpinBox, QFileDialog
+    QMessageBox, QLineEdit, QSpinBox, QFileDialog, QWidget
 )
-from PyQt6.QtCore import Qt, QUrl, QObject, QEvent, QRect
+from PyQt6.QtCore import Qt, QUrl, QObject, QEvent, QRect, QTimer
 
 # ---------- DB settings ----------
 DB_HOST = os.getenv("BHC_DB_HOST", "database-1.ct0kcwawch43.ap-northeast-2.rds.amazonaws.com")
@@ -18,9 +18,13 @@ DB_NAME = os.getenv("BHC_DB_NAME", "bhc_database")
 
 UI_FILE = os.path.abspath("bha_gui.ui")
 
+# ---------- Heartbeat dashboard thresholds ----------
+ONLINE_SEC = 10   # 초록 임계
+WARN_SEC   = 30   # 노랑 임계
+
 # ---------- Drive/rclone settings (필요 시 수정) ----------
 RCLONE_REMOTE   = os.getenv("RCLONE_REMOTE", "dl_project")                  # rclone 원격 이름
-DRIVE_FOLDER_ID = os.getenv("DRIVE_FOLDER_ID", "1k2mk0qF2i6Zw1fUg0YBNgBMY9OL5EkBI")  # 대상 폴더 ID
+DRIVE_FOLDER_ID = os.getenv("DRIVE_FOLDER_ID", "1XZv-AhjJysnndQMxY9QWJfC1vlub8zrU")  # 대상 폴더 ID
 
 # ---------- VQA Log dialog ----------
 class VqaLogDialog(QDialog):
@@ -62,7 +66,7 @@ class VqaLogDialog(QDialog):
             import pymysql
             conn = pymysql.connect(
                 host=DB_HOST, port=DB_PORT, user=DB_USER, password=DB_PASS,
-                database=DB_NAME, charset="utf8mb4", cursorclass=pymysql.cursors.DictCursor
+                database=DB_NAME, charset="utf8mb4", cursorclass=pymysql.cursors.DictCursor, autocommit=True
             )
             with conn:
                 with conn.cursor() as cur:
@@ -157,7 +161,8 @@ class EmbeddedCamera:
         self.videoWidget.setGeometry(self.container.rect())
 
     def start(self, device_index: int = 1):
-        devices = self.QMediaDevices.videoInputs()
+        from PyQt6.QtMultimedia import QMediaDevices
+        devices = QMediaDevices.videoInputs()
         if not devices:
             raise RuntimeError("사용 가능한 비디오 입력 장치가 없습니다.")
         if device_index < 0 or device_index >= len(devices):
@@ -264,6 +269,94 @@ def try_save_to_drive(local_path: str) -> str:
 
     return f"{msg_rc} | Drive 동기화 폴더가 없어 로컬에만 저장되었습니다."
 
+# ---------- Heartbeat dashboard helpers ----------
+def _led_widget(color_css: str, text: str = "") -> QWidget:
+    w = QWidget()
+    dot = QLabel()
+    dot.setFixedSize(14, 14)
+    dot.setStyleSheet(f"background:{color_css}; border-radius:7px;")
+    txt = QLabel(text)
+    lay = QHBoxLayout(w)
+    lay.setContentsMargins(0, 0, 0, 0)
+    lay.setSpacing(6)
+    lay.addWidget(dot, 0, Qt.AlignmentFlag.AlignVCenter)
+    lay.addWidget(txt, 0, Qt.AlignmentFlag.AlignVCenter)
+    return w
+
+def _state_color(sec_since_seen: int, status: str) -> tuple[str, str]:
+    level = "green" if sec_since_seen <= ONLINE_SEC else ("orange" if sec_since_seen <= WARN_SEC else "red")
+    if status != "OK":
+        level = "orange" if level == "green" else "red"
+    label = {"green":"Online", "orange":"Warning", "red":"Offline"}[level]
+    color = {"green":"#22c55e", "orange":"#f59e0b", "red":"#ef4444"}[level]
+    return color, label
+
+def _ensure_conn_table_on(panel: QWidget) -> QTableWidget:
+    """connectionPanel 안에 connTable(QTableWidget)이 없으면 생성"""
+    table = panel.findChild(QTableWidget, "connTable")
+    if table:
+        return table
+    if panel.layout() is None:
+        lay = QVBoxLayout(panel)
+        lay.setContentsMargins(8, 8, 8, 8)
+        lay.setSpacing(6)
+    else:
+        lay = panel.layout()
+    table = QTableWidget(panel)
+    table.setObjectName("connTable")
+    lay.addWidget(table)
+    return table
+
+def _init_conn_table(table: QTableWidget):
+    table.setColumnCount(4)
+    table.setHorizontalHeaderLabels(["Component", "IP", "Status", "Last Seen"])
+    hh = table.horizontalHeader()
+    hh.setStretchLastSection(True)
+    for i in range(4):
+        hh.setSectionResizeMode(i, QHeaderView.ResizeMode.Interactive)
+    table.setShowGrid(False)
+    table.setAlternatingRowColors(True)
+    table.setEditTriggers(table.EditTrigger.NoEditTriggers)
+    table.setSelectionMode(table.SelectionMode.NoSelection)
+    table.verticalHeader().setVisible(False)
+
+def _fetch_heartbeat_rows():
+    """DB에서 component, ip, status, last_seen, sec_since_seen 가져오기"""
+    import pymysql
+    conn = pymysql.connect(
+        host=DB_HOST, port=DB_PORT, user=DB_USER, password=DB_PASS, database=DB_NAME,
+        charset="utf8mb4", autocommit=True
+    )
+    with conn:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT component, ip, status, last_seen,
+                   TIMESTAMPDIFF(SECOND, last_seen, NOW()) AS sec_since_seen
+            FROM system_heartbeat
+            ORDER BY component, ip
+        """)
+        rows = cur.fetchall()
+    return rows
+
+def _refresh_dashboard(table: QTableWidget):
+    try:
+        rows = _fetch_heartbeat_rows()
+    except Exception as e:
+        traceback.print_exc()
+        table.setRowCount(1)
+        table.setItem(0, 0, QTableWidgetItem("DB ERROR"))
+        table.setItem(0, 1, QTableWidgetItem(str(e)))
+        return
+
+    table.setRowCount(len(rows))
+    for r, (component, ip, status, last_seen, sec_since) in enumerate(rows):
+        table.setItem(r, 0, QTableWidgetItem(str(component)))
+        table.setItem(r, 1, QTableWidgetItem(str(ip)))
+        color, label = _state_color(int(sec_since), str(status))
+        table.setCellWidget(r, 2, _led_widget(color, label))
+        table.setItem(r, 3, QTableWidgetItem(f"{last_seen}  (+{sec_since}s)"))
+        table.setRowHeight(r, 26)
+
 # ---------- Custom LoadVideoDialog ----------
 class LoadVideoDialog(QDialog):
     def __init__(self, parent=None):
@@ -302,6 +395,9 @@ class Main(QMainWindow):
         self._recording = False
         self._record_dir = os.path.expanduser("~/Videos/bha_captures")
         os.makedirs(self._record_dir, exist_ok=True)
+
+        # ----- Build mini dashboard in connectionPanel -----
+        self._setup_connection_dashboard()
 
         if hasattr(self, "alertList"):
             self.alertList.addItems([
@@ -345,10 +441,61 @@ class Main(QMainWindow):
         if hasattr(self, "btnCamStop") and self._cam:
             self.btnCamStop.clicked.connect(self._cam.stop)
 
-        # ---- 녹화/정지 버튼: videoMain 아래 중앙 정렬 ----
+        # ---- 녹화/정지 버튼 ----
         self._build_record_buttons_below_videoMain()
         self.installEventFilter(_ResizeRelay(self._position_record_buttons))
 
+        # ===== (선택) 이 GUI도 Heartbeat 쓰기: BHC_GUI =====
+        self._hb_stop = False
+        threading.Thread(target=self._send_gui_heartbeat, daemon=True).start()
+
+    # ----- Connection dashboard -----
+    def _setup_connection_dashboard(self):
+        panel = getattr(self, "connectionPanel", None)
+        if not isinstance(panel, QWidget):
+            return
+        table = _ensure_conn_table_on(panel)
+        _init_conn_table(table)
+
+        _refresh_dashboard(table)
+
+        self._conn_dash_timer = QTimer(self)
+        self._conn_dash_timer.setInterval(2000)   # 2s
+        self._conn_dash_timer.timeout.connect(lambda: _refresh_dashboard(table))
+        self._conn_dash_timer.start()
+
+        btn = getattr(self, "btnReconnect", None)
+        if isinstance(btn, QPushButton):
+            btn.clicked.connect(lambda: _refresh_dashboard(table))
+
+    # ----- GUI Heartbeat sender -----
+    def _send_gui_heartbeat(self):
+        # IP 추출: 호스트네임 기반(환경에 따라 수정 가능)
+        try:
+            ip = socket.gethostbyname(socket.gethostname())
+        except Exception:
+            ip = "127.0.0.1"
+
+        # 주기적으로 Heartbeat 업서트
+        while not self._hb_stop:
+            try:
+                import pymysql
+                conn = pymysql.connect(
+                    host=DB_HOST, port=DB_PORT, user=DB_USER, password=DB_PASS,
+                    database=DB_NAME, autocommit=True
+                )
+                with conn.cursor() as cur:
+                    cur.execute("""
+                        INSERT INTO system_heartbeat (component, ip, status, last_seen)
+                        VALUES ('BHC_GUI', %s, 'OK', NOW())
+                        ON DUPLICATE KEY UPDATE status=VALUES(status), last_seen=NOW()
+                    """, (ip,))
+            except Exception:
+                # 조용히 무시하고 다음 주기 시도
+                pass
+            time.sleep(5)  # 5초마다 heartbeat
+
+    # ---------- Recording UI ----------
     def _build_record_buttons_below_videoMain(self):
         self.btnRecord = QPushButton("● Record", self); self.btnRecord.setStyleSheet("font-weight:600;")
         self.btnStopRec = QPushButton("■ Stop", self); self.btnStopRec.setEnabled(False)
@@ -445,13 +592,25 @@ class Main(QMainWindow):
             def stop(self): self._p.stop()
         self._floating_player = _Shim(player, dlg); return self._floating_player
 
+    # ---------- Graceful stop ----------
     def keyPressEvent(self, e):
-        if e.key() == Qt.Key.Key_Escape: self.close()
-        else: super().keyPressEvent(e)
+        if e.key() == Qt.Key.Key_Escape:
+            self.close()
+        else:
+            super().keyPressEvent(e)
+
+    def closeEvent(self, event):
+        # Heartbeat 스레드 종료 플래그
+        self._hb_stop = True
+        try:
+            self._conn_dash_timer.stop()
+        except Exception:
+            pass
+        super().closeEvent(event)
 
 # ---------- main ----------
 if __name__ == '__main__':
-    try: import pymysql
+    try: import pymysql  # dashboard/heartbeat용
     except Exception: print("TIP: pip install pymysql")
     try:
         from PyQt6.QtMultimedia import QMediaPlayer, QCamera
