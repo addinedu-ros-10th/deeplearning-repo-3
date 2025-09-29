@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1344</width>
-    <height>659</height>
+    <width>971</width>
+    <height>882</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +19,8 @@
      <rect>
       <x>12</x>
       <y>12</y>
-      <width>920</width>
-      <height>620</height>
+      <width>921</width>
+      <height>811</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -29,14 +29,14 @@
     <widget class="QLabel" name="videoMain">
      <property name="geometry">
       <rect>
-       <x>0</x>
-       <y>0</y>
+       <x>10</x>
+       <y>30</y>
        <width>450</width>
        <height>300</height>
       </rect>
      </property>
      <property name="text">
-      <string>videoMain (D435)</string>
+      <string>videoMain</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -46,371 +46,25 @@
      <property name="geometry">
       <rect>
        <x>480</x>
-       <y>10</y>
-       <width>401</width>
-       <height>261</height>
+       <y>30</y>
+       <width>421</width>
+       <height>301</height>
       </rect>
      </property>
      <property name="text">
-      <string>videoRoad (Webcam)</string>
+      <string>videoRoad</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QGroupBox" name="alertsPanel">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>320</y>
-       <width>450</width>
-       <height>300</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>alertsPanel</string>
-     </property>
-     <widget class="QListWidget" name="alertList">
-      <property name="geometry">
-       <rect>
-        <x>8</x>
-        <y>24</y>
-        <width>434</width>
-        <height>268</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QGroupBox" name="hapticsPanel">
-     <property name="geometry">
-      <rect>
-       <x>470</x>
-       <y>320</y>
-       <width>220</width>
-       <height>300</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>hapticsPanel</string>
-     </property>
-     <widget class="QLabel" name="labelLeft">
-      <property name="geometry">
-       <rect>
-        <x>8</x>
-        <y>24</y>
-        <width>100</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Left motor</string>
-      </property>
-     </widget>
-     <widget class="QProgressBar" name="pbLeft">
-      <property name="geometry">
-       <rect>
-        <x>8</x>
-        <y>48</y>
-        <width>204</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="value">
-       <number>0</number>
-      </property>
-     </widget>
-     <widget class="QLabel" name="labelRight">
-      <property name="geometry">
-       <rect>
-        <x>8</x>
-        <y>80</y>
-        <width>100</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Right motor</string>
-      </property>
-     </widget>
-     <widget class="QProgressBar" name="pbRight">
-      <property name="geometry">
-       <rect>
-        <x>8</x>
-        <y>104</y>
-        <width>204</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="value">
-       <number>0</number>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="btnTestL">
-      <property name="geometry">
-       <rect>
-        <x>8</x>
-        <y>140</y>
-        <width>95</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Test Left</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="btnTestR">
-      <property name="geometry">
-       <rect>
-        <x>117</x>
-        <y>140</y>
-        <width>95</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Test Right</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QGroupBox" name="audioPanel">
-     <property name="geometry">
-      <rect>
-       <x>700</x>
-       <y>320</y>
-       <width>220</width>
-       <height>300</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>audioPanel</string>
-     </property>
-     <widget class="QListWidget" name="ttsQueue">
-      <property name="geometry">
-       <rect>
-        <x>8</x>
-        <y>24</y>
-        <width>204</width>
-        <height>180</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QLabel" name="labelVolume">
-      <property name="geometry">
-       <rect>
-        <x>8</x>
-        <y>214</y>
-        <width>80</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Volume</string>
-      </property>
-     </widget>
-     <widget class="QSlider" name="volSlider">
-      <property name="geometry">
-       <rect>
-        <x>90</x>
-        <y>210</y>
-        <width>122</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="minimum">
-       <number>0</number>
-      </property>
-      <property name="maximum">
-       <number>100</number>
-      </property>
-      <property name="value">
-       <number>80</number>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QPushButton" name="btnLoad">
-     <property name="geometry">
-      <rect>
-       <x>640</x>
-       <y>280</y>
-       <width>80</width>
-       <height>28</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Load</string>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QFrame" name="rightArea">
-    <property name="geometry">
-     <rect>
-      <x>944</x>
-      <y>12</y>
-      <width>386</width>
-      <height>620</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <widget class="QGroupBox" name="paramsPanel">
-     <property name="geometry">
-      <rect>
-       <x>8</x>
-       <y>8</y>
-       <width>370</width>
-       <height>190</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>paramsPanel</string>
-     </property>
-     <widget class="QLabel" name="labelSafe">
-      <property name="geometry">
-       <rect>
-        <x>8</x>
-        <y>24</y>
-        <width>100</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Safe radius</string>
-      </property>
-     </widget>
-     <widget class="QSlider" name="safeSlider">
-      <property name="geometry">
-       <rect>
-        <x>110</x>
-        <y>20</y>
-        <width>250</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="minimum">
-       <number>50</number>
-      </property>
-      <property name="maximum">
-       <number>400</number>
-      </property>
-      <property name="value">
-       <number>150</number>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-     <widget class="QLabel" name="labelClass">
-      <property name="geometry">
-       <rect>
-        <x>8</x>
-        <y>58</y>
-        <width>100</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Class filter</string>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="cbHuman">
-      <property name="geometry">
-       <rect>
-        <x>8</x>
-        <y>80</y>
-        <width>80</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Human</string>
-      </property>
-      <property name="checked">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="cbCar">
-      <property name="geometry">
-       <rect>
-        <x>90</x>
-        <y>80</y>
-        <width>80</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Car</string>
-      </property>
-      <property name="checked">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="cbBicycle">
-      <property name="geometry">
-       <rect>
-        <x>172</x>
-        <y>80</y>
-        <width>80</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Bicycle</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="labelMode">
-      <property name="geometry">
-       <rect>
-        <x>8</x>
-        <y>110</y>
-        <width>60</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Mode</string>
-      </property>
-     </widget>
-     <widget class="QRadioButton" name="rbOutdoor">
-      <property name="geometry">
-       <rect>
-        <x>8</x>
-        <y>132</y>
-        <width>90</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>outdoor</string>
-      </property>
-      <property name="checked">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QRadioButton" name="rbIndoor">
-      <property name="geometry">
-       <rect>
-        <x>100</x>
-        <y>132</y>
-        <width>90</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>indoor</string>
-      </property>
-     </widget>
-    </widget>
     <widget class="QGroupBox" name="connectionPanel">
      <property name="geometry">
       <rect>
-       <x>8</x>
-       <y>206</y>
-       <width>370</width>
-       <height>181</height>
+       <x>10</x>
+       <y>350</y>
+       <width>431</width>
+       <height>171</height>
       </rect>
      </property>
      <property name="title">
@@ -420,62 +74,63 @@
     <widget class="QGroupBox" name="logTable">
      <property name="geometry">
       <rect>
-       <x>8</x>
-       <y>390</y>
-       <width>370</width>
-       <height>228</height>
+       <x>10</x>
+       <y>540</y>
+       <width>881</width>
+       <height>251</height>
       </rect>
      </property>
      <property name="title">
       <string>logTable</string>
      </property>
-     <widget class="QPushButton" name="btnVqaLog">
-      <property name="geometry">
-       <rect>
-        <x>8</x>
-        <y>24</y>
-        <width>80</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>vqa_log</string>
-      </property>
-     </widget>
-     <widget class="QTableWidget" name="tbl">
-      <property name="geometry">
-       <rect>
-        <x>8</x>
-        <y>60</y>
-        <width>354</width>
-        <height>160</height>
-       </rect>
-      </property>
-      <property name="columnCount">
-       <number>3</number>
-      </property>
-      <attribute name="horizontalHeaderVisible">
-       <bool>true</bool>
-      </attribute>
-      <attribute name="verticalHeaderVisible">
-       <bool>false</bool>
-      </attribute>
-      <column>
-       <property name="text">
-        <string>time</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>event</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>action</string>
-       </property>
-      </column>
-     </widget>
+    </widget>
+    <widget class="QLabel" name="bhcLabel">
+     <property name="geometry">
+      <rect>
+       <x>480</x>
+       <y>360</y>
+       <width>411</width>
+       <height>181</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="bhcLabel_2">
+     <property name="geometry">
+      <rect>
+       <x>-30</x>
+       <y>0</y>
+       <width>91</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>V1</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="bhcLabel_3">
+     <property name="geometry">
+      <rect>
+       <x>440</x>
+       <y>0</y>
+       <width>91</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>V2</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
     </widget>
    </widget>
   </widget>
