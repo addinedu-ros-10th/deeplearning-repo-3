@@ -1,7 +1,7 @@
 # BHC — Blind Helper Companion  
 **Walking Together, Guiding Safely**  
 
-<img src="./bhc.png" alt="BHC Logo" width="300"/>  
+<img src="./asset/bhc.png" alt="BHC Logo" width="300"/>  
 
 ---
 
