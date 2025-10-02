@@ -43,7 +43,7 @@
 
 ### 주요 구성 요소  
 - **YOLO 기반 객체 인식**: 차량, 횡단보도, 장애물 등 감지  
-- **Depth Estimation**: 깊이 카메라로 거리 계산  
+- **Depth Estimation**: RealSense 카메라로 거리 계산  
 - **VQA (Visual Question Answering)**: 영상 기반 질문응답  
 - **SST (Speech-to-Text)**: 사용자 음성을 텍스트로 변환  
 - **TTS (Text-to-Speech)**: 결과를 음성으로 전달  
