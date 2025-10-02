@@ -1,2 +1,155 @@
-# deeplearning-repo-3
-딥러닝 프로젝트 3조 저장소. 시각장애인 보행 보조 가이드 (Walking Assistance Guide for the Visually Impaired)
+# BHC — Blind Helper Companion  
+**Walking Together, Guiding Safely**  
+
+<p align="center">
+  <img src="./asset/bhc.png" alt="BHC Logo" width="300"/>
+</p>  
+
+---
+
+## 📌 프로젝트 개요  
+**BHC (Blind Helper Companion)** 는 시각장애인의 안전한 보행을 돕기 위한 **딥러닝 기반 주행 보조 시스템**입니다.  
+기존 지팡이로는 감지하기 어려운 **낮은 울타리, 연석, 계단, 돌출물**이나 **주행 중 차량**을 카메라와 인공지능을 활용해 인식하고,</br>음성·진동을 통해 위험을 알립니다.  
+또한 **VQA (Visual Question Answering)** 기능을 탑재하여 사용자가 *"앞에 뭐가 있나요?"* 같은 질문을 하면 </br> 실시간 영상 분석을 바탕으로 답변을 제공합니다.  
+
+---
+
+## 🚨 필요성  
+- 국내 등록 시각장애인 약 **25만 명**, 전체 장애 유형 중 세 번째로 높은 비중  
+- 지팡이만으로는 **2m 이상 떨어진 장애물**이나 **움직이는 차량** 감지가 어려움  
+- 사용자가 직접 위험 수준을 판단해야 하는 한계  
+
+---
+
+## 🎯 개발 목적  
+- 시각장애인의 **보행 안전 확보**  
+- 지팡이의 한계를 보완하는 **객체 인식 및 상황 설명 제공**  
+- 자율성과 이동권 보장  
+
+---
+
+## 📋 사용자 요구사항  
+
+| 번호 | 요구사항 | 설명 |
+|------|----------|------|
+| UR_01 | 보행 보조 | 보행 중 다양한 상황에 대한 정보 제공 |
+| UR_02 | 장애물 / 노면 인식 | 장애물과 맨홀 혹은 공사 상태 등 바닥 상태 정보 제공 |
+| UR_03 | 객체 거리 측정 | 객체와의 거리 정보 제공 |
+| UR_04 | 현재 상황 설명 | 사용자가 바라보는 방향의 상황 설명 |
+
+---
+
+## 🛠 시스템 요구사항 및 아키텍처  
+
+### 주요 구성 요소  
+- **YOLO 기반 객체 인식**: 차량, 횡단보도, 장애물 등 감지  
+- **Depth Estimation**: RealSense 카메라로 거리 계산  
+- **VQA (Visual Question Answering)**: 영상 기반 질문응답  
+- **SST (Speech-to-Text)**: 사용자 음성을 텍스트로 변환  
+- **TTS (Text-to-Speech)**: 결과를 음성으로 전달  
+- **GUI (PyQt6)**: 인식 결과를 직관적으로 확인  
+
+### 시스템 아키텍처  
+
+<p align="center">
+  <img src="./asset/SA.png"/>
+  <img src="./asset/SA1.png"/>
+  <img src="./asset/SA2.png"/>
+</p>
+
+---
+
+## 🚀 주요 기능  
+
+### 객체 인식(Object Detection / Segmentation)  
+<p align="center">
+  <img src="./asset/Obstacle.gif"/>
+  <br/>
+  <img src="./asset/ob_results.png"/>
+  <br/>
+ <b>객체 인식 학습결과</b> </br>
+</p>  
+
+<p align="center">
+  <img src="./asset/Surface.gif"/>
+  <br/>
+  <img src="./asset/sf_results.png"/>
+  <br/>
+ <b>노면 인식 학습결과 </b> </br>
+</p>  
+
+---
+
+### 거리 추정(Depth Camera 연동)  
+<p align="center">
+  <img src="./asset/29.png"/>
+  <img src="./asset/30.png"/>
+  <img src="./asset/31.png"/>
+</p>  
+
+---
+
+### VQA 질의응답  
+영상 기반 질문 응답 기능  
+
+<p align="center">
+  <b>VQA 구현 Sequence</b> </br>
+  <img src="./asset/vqa1.png"/>
+  <br/>
+</p>
+
+<p align="center">
+  <b>최초 모델</b> </br></br>
+  <img src="./asset/vqa2.png"/>
+  <img src="./asset/vqa3.png"/>
+</p>
+
+<p align="center">
+  <b>모델 개선 후</b> </br></br>
+  <img src="./asset/vqa4.png"/>
+  <img src="./asset/vqa5.png"/>
+</p>  
+
+---
+
+### 음성 인터페이스  
+- **SST (Speech-to-Text)**: 사용자 음성을 인식  
+- **TTS (Text-to-Speech)**: 분석 결과를 음성으로 안내  
+
+---
+
+### GUI 제공  
+<p align="center">
+  <img src="./asset/gui10.png"/>
+  <img src="./asset/gui11.png"/>
+  <img src="./asset/gui12.png"/>
+</p>  
+
+**GUI 기능**  
+- **V1 (왼쪽)**: BHC_CAM과 연결된 실시간 화면 송출 및 영상 녹화  
+- **V2 (오른쪽)**: V1의 녹화된 영상 재생 (녹화 종료 시 rclone을 이용해 서버 자동 저장)  
+- **상태 모니터링**: BHC SERVER / CAM / GUI 연결 상태 확인 (heartbeats 모듈 활용)  
+- **DB 연동**: 데이터베이스에 저장된 VQA 데이터 조회 및 표시  
+
+---
+
+## 🌱 기대 효과 및 확장성  
+- **시각장애인의 안전한 이동 지원**  
+- **자율성과 이동권 보장**  
+- **웨어러블 디바이스, 상용 서비스 모델**로 확장 가능  
+
+---
+
+## 👥 팀 소개  
+- **팀명**: BHC (Blind Helper Companion)  
+- **팀원**: 김진수, 박장호, 이건명, 임정찬, 정태민
+
+### 📌 R&R (Roles & Responsibilities)  
+
+| 팀원 | 담당 역할 |
+|------|--------------------------------|
+| 김진수 | H/W 설계 |
+| 박장호 | YOLO 모델 개발, ROI 설계 |
+| 이건명 | VQA 모델, STT/TTS, 서버 |
+| 임정찬 | H/W 설계 |
+| 정태민 | GUI 제작, DB 설계 |
