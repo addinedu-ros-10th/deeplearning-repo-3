@@ -92,6 +92,26 @@
 ### VQA 질의응답  
 영상 기반 질문 응답 기능  
 
+<p align="center">
+  <b>VQA 구현 Sequence</b> </br>
+  <img src="./asset/vqa1.png"/>
+  <br/>
+</p>
+
+<p align="center">
+  <b>최초 모델</b> </br></br>
+  <img src="./asset/vqa2.png"/>
+  <img src="./asset/vqa3.png"/>
+</p>
+
+<p align="center">
+  <b>모델 개선 후</b> </br></br>
+  <img src="./asset/vqa4.png"/>
+  <img src="./asset/vqa5.png"/>
+</p>  
+
+---
+
 ### 음성 인터페이스  
 - **SST (Speech-to-Text)**: 사용자 음성을 인식  
 - **TTS (Text-to-Speech)**: 분석 결과를 음성으로 안내  
@@ -100,8 +120,9 @@
 
 ### GUI 제공  
 <p align="center">
-  <img src="./asset/gui1.png"/>
-  <img src="./asset/gui2.png"/>
+  <img src="./asset/gui10.png"/>
+  <img src="./asset/gui11.png"/>
+  <img src="./asset/gui12.png"/>
 </p>  
 
 **GUI 기능**  
